@@ -16,22 +16,33 @@ const inputUrl = args[2];
 const saveLocation = args[3];  //takes in our two values from cmd and stores them
 
 const fetcher = function(url, localPath) {
-  console.log(`We recieved`, url,`and saving it to`, localPath);
+  console.log(`\nOur working URL is:`, url,`and we're saving it locally to:`, localPath);
 
   request(url, (error, response, body) => {
     console.log('error:', error); // Print the error if one occurred
     console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-    console.log('body:', body); // Print the HTML for the body
+    //console.log('body:', body); // Print the HTML for the body
+
+    //
 
     //takes our body and writes it to a new file asynchronously
-     fs.writeFile('./testFile.txt', body, err => {
+     fs.writeFile(localPath, body, err => {
       if (err) {
         console.error(`issue writing content`, err);
       } else {
-       console.log(`file written successfully`);
+       console.log(`file written successfully and saved to ${localPath}.`);
       }
+      //checks the size
+      fs.stat(localPath, (err,stats)=>{
+        if (err){
+          console.log(`error occurred in checking file stats`, err);
+        }
+        else{
+          // console.log(`heres our super cool file stats`, stats);
+          console.log(`Our file has been sucessfully saved and takes up ${stats.size}bytes of memory.`);
+        }  
+      })
     });
-
   });
 
 
@@ -39,5 +50,6 @@ const fetcher = function(url, localPath) {
   
 };
 
-/* node fetcher.js https://www.example.edu ./localFolder/siteContent.txt */
+//run the following command
+/* node fetcher.js https://www.example.edu ./testFile.txt */
 fetcher(inputUrl, saveLocation);
